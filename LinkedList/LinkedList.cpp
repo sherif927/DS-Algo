@@ -15,6 +15,8 @@ void Insert(int x);
 void InsertAtHead(int x);
 void InsertAt(int x, int i);
 void Delete(int i);
+void ReverseIter();
+void ReverseRec(Node* p);
 void Print();
 
 int main()
@@ -27,8 +29,7 @@ int main()
 	InsertAt(5, 4); // 2 3 4 1 5
 	Print();
 
-	Delete(1); //2 4 1 5
-	Delete(0); //4 1 5
+	ReverseRec(Head);
 	Print();
 	system("pause");
 }
@@ -111,6 +112,37 @@ void Delete(int index)
 		trav->Next = trav->Next->Next;
 	}
 	delete(temp);
+}
+
+void ReverseIter()
+{
+	Node* current, *previous, *next;
+	current = Head; previous = NULL;
+
+	while(current != NULL)
+	{
+		next = current->Next;
+		current->Next = previous;
+		previous = current;
+		current = next;
+	}
+
+	Head = previous;
+}
+
+void ReverseRec(Node* p)
+{
+	if(	p->Next == NULL)
+	{
+		Head = p;
+		return;
+	}
+
+	ReverseRec(p->Next);
+
+	Node* q = p->Next;
+	q->Next = p;
+	p->Next = NULL;
 }
 
 void Print()
