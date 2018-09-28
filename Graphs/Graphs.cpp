@@ -13,14 +13,21 @@ using namespace std;
 unordered_map<int, char> V;
 bool E [8][8];
 unordered_map<int, list<pair<int, int>>> M;
+unordered_map<int, list<int>> adj;
 bool MST[4] = {0, 0, 0, 0};
+const int COUNT = 4;
 
 void ConstructGraph();
 void BFS(int s);
 void DFS(int s);
 void DFS_Util(int v, bool visted[]);
+void TopologicalSort(int src);
+void TopologicalSort_Util(int v, bool visited[], stack<int>& stack);
+bool IsCyclic();
+bool IsCyclicUtil(int v, bool visited[], bool rec[]);
 void AddEdge(int u, int v, int dist);
 void Dijkstra(int src);
+void BFS_Reach(int src);
 int Prim(int src);
 
 
@@ -31,7 +38,7 @@ int main()
 	AddEdge(1,2,1);
 	AddEdge(2,3,2);
 	AddEdge(0, 3, 7);
-	cout << Prim(0) << endl;
+	BFS_Reach(0);
 	system("pause");
 }
 
@@ -105,9 +112,80 @@ void DFS_Util(int v,bool visited[])
 	}
 }
 
+void TopologicalSort(int src)
+{	
+
+	stack<int> stack;
+
+	bool* visited = new bool[8];
+	for(int i = 0; i < 8; i++)
+		visited[i] = false;
+
+	for(int i = 0; i < 8;i++)
+		if(!visited[i])
+			TopologicalSort_Util(src, visited);
+
+	while(!stack.empty())
+	{
+		cout << stack.top()<<" ";
+		stack.pop();
+	}
+}
+
+void TopologicalSort_Util(int v,bool visited[],stack<int>& stack)
+{
+	visited[v] = true;
+
+	for(int child : adj[v])
+	{
+		if(!visited[child])
+			TopologicalSort_Util(child, visited, stack);
+	}
+
+	stack.push(v);
+}
+
+bool IsCyclic()
+{
+	bool* visited = new bool[4];
+	bool* rec = new bool[4];
+
+	for(int i = 0; i < 4; i++)
+	{	
+		rec[i] = false;
+		visited[i] = false;
+	}
+
+	for(int i = 0; i < 4; i++)
+		 if(IsCyclicUtil(i,)
+		
+}
+
+bool IsCyclicUtil(int v,bool visited[],bool rec[])
+{
+	visited[v] = true;
+	rec[v] = true;
+
+	for(auto child : adj[v])
+	{
+		if(!visited[child])
+		{
+			return IsCyclicUtil(child,visited,rec);
+		}
+		else if(rec[child])
+		{
+			return true;
+		}
+	}
+
+	rec[v] = false;
+	return false;
+}
+
 void AddEdge(int u, int v, int dist)
 {
 	M[u].push_back(pair<int, int>(v, dist));
+	adj[u].push_back(v);
 }
 
 void Dijkstra(int src)
@@ -172,13 +250,12 @@ int Prim(int src)
 	unordered_map <int, int> map;
 	map[src] = 0;
 
-	for(int i = 1; i < 4; i++){
+	for(int i = 1; i < 4; i++)
+	{
 		map[i] = INT_MAX;
 		MST[i] = false;
 	}
 		
-	
-
 	while(MST_COUNT < 4)
 	{
 		auto current = GetMin(map);
@@ -197,9 +274,37 @@ int Prim(int src)
 		}
 	}
 
-	int sum = 0;
+	int sum (0);
 	for(auto obj : map)
 		sum += obj.second;
 
 	return sum;
+}
+
+void BFS_Reach(int src)
+{
+	int dist[COUNT] = {-1, -1, -1, -1};
+	dist[src] = 0;
+	
+	queue<int> q;
+	q.push(src);
+
+	while(!q.empty())
+	{
+		auto current = q.front();
+		q.pop();
+
+		for(auto child:adj[current])
+		{	
+			//Checking if the node was not visited before
+			if(dist[child] == -1)
+			{
+				q.push(child);
+				dist[child] = dist[current] + 1;
+			}
+		}
+	}
+
+	for(int i = 0; i < 4; i++)
+		cout << "distance between " << src << " and " << i << " is " << dist[i] << endl;
 }
