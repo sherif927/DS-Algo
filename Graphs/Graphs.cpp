@@ -13,6 +13,7 @@ using namespace std;
 unordered_map<int, char> V;
 bool E [8][8];
 unordered_map<int, list<pair<int, int>>> M;
+bool MST[4] = {0, 0, 0, 0};
 
 void ConstructGraph();
 void BFS(int s);
@@ -153,36 +154,36 @@ void Dijkstra(int src)
 	}
 }
 
-pair<int,int> GetMin(unordered_map<int,int> map,bool MST[])
+pair<int,int> GetMin(unordered_map<int,int> map)
 {
 	pair<int, int> trav = make_pair(INT_MAX, INT_MAX);
 	unordered_map<int, int>::iterator i = map.begin();
 
 	for(i; i != map.end();i++)
 	{
-		if(!MST[i->first] && trav.second < i->second)
+		if(!MST[i->first] && trav.second > i->second)
 			trav = *(i);
 	} return trav;
 }
 
-
 int Prim(int src)
 {	
-	//Flags
-	bool MST[8];
 	int MST_COUNT = 0;
 	unordered_map <int, int> map;
 	map[src] = 0;
 
-	for(int i = 1; i < 8; i++)
+	for(int i = 1; i < 4; i++){
 		map[i] = INT_MAX;
+		MST[i] = false;
+	}
+		
 	
 
-	while(MST_COUNT < 8)
+	while(MST_COUNT < 4)
 	{
-		auto current = GetMin(map,MST);
-		int node = current.second;
-		int key = current.first;
+		auto current = GetMin(map);
+		int node = current.first;
+		int key = current.second;
 		MST[node] = true;
 		MST_COUNT++;
 
