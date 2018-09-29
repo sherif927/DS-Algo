@@ -157,8 +157,10 @@ bool IsCyclic()
 	}
 
 	for(int i = 0; i < 4; i++)
-		 if(IsCyclicUtil(i,)
-		
+		 if(IsCyclicUtil(i,visited,rec))
+		 		return true;
+				 
+	return false;	
 }
 
 bool IsCyclicUtil(int v,bool visited[],bool rec[])
